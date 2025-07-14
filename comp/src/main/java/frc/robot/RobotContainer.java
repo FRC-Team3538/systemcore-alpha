@@ -158,7 +158,8 @@ public class RobotContainer {
         new Notifier(
             () -> {
               drivetrain.configNeutralMode(NeutralModeValue.Coast);
-            elevator.setCoastMode();            });
+              elevator.setCoastMode();
+            });
   }
 
   private void configureBehavior() {

@@ -510,8 +510,7 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
     RJLog.log("Drive/Path/Target", sample.getPose());
     RJLog.log("Drive/Path/Speeds", sample.getChassisSpeeds());
     RJLog.log(
-        "Drive/Path/MeasuredSpeeds",
-        getStateCopy().Speeds.toFieldRelative(pose.getRotation()));
+        "Drive/Path/MeasuredSpeeds", getStateCopy().Speeds.toFieldRelative(pose.getRotation()));
     RJLog.log("Drive/Path/SpeedsWithPID", targetSpeeds);
 
     setControl(
@@ -1094,12 +1093,12 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
                   var orientation = headingOverride.apply(state);
 
                   var input =
-                              repulsor.sampleField(
-                                  state.Pose.getTranslation(),
-                                  target.getTranslation(),
-                                  orientation,
-                                  TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
-                                  2.5);
+                      repulsor.sampleField(
+                          state.Pose.getTranslation(),
+                          target.getTranslation(),
+                          orientation,
+                          TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
+                          2.5);
 
                   followPath(input);
                 })
@@ -1115,41 +1114,35 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
                           state.Speeds.toFieldRelative(state.Pose.getRotation());
 
                       var linearSpeeds =
-                          new Translation2d(
-                              fieldRelativeSpeeds.vx,
-                              fieldRelativeSpeeds.vy);
+                          new Translation2d(fieldRelativeSpeeds.vx, fieldRelativeSpeeds.vy);
 
-                      var waypoints = 
-                                  PathPlannerPath.waypointsFromPoses(
-                                      new Pose2d(
-                                          state.Pose.getTranslation(), linearSpeeds.getAngle()),
-                                      target);
-                      var path = 
-                                  new PathPlannerPath(
-                                      waypoints,
-                                      ppConstraints,
-                                      new IdealStartingState(
-                                          linearSpeeds.getNorm(),
-                                          getStateCopy().Pose.getRotation()),
-                                      new GoalEndState(0, target.getRotation()));
-                      return 
-                              new FollowPathCommand(
-                                      path,
-                                      () -> getStateCopy().Pose,
-                                      () -> getStateCopy().Speeds,
-                                      (speeds, feedforwards) ->
-                                          setControl(
-                                              applyRobotSpeeds
-                                                  .withSpeeds(speeds)
-                                                  .withWheelForceFeedforwardsX(
-                                                      feedforwards.robotRelativeForcesXNewtons())
-                                                  .withWheelForceFeedforwardsY(
-                                                      feedforwards.robotRelativeForcesYNewtons())),
-                                      new PPHolonomicDriveController(
-                                          translationConstants, rotationConstants),
-                                      ppRobotConfig,
-                                      () -> false,
-                                      this);
+                      var waypoints =
+                          PathPlannerPath.waypointsFromPoses(
+                              new Pose2d(state.Pose.getTranslation(), linearSpeeds.getAngle()),
+                              target);
+                      var path =
+                          new PathPlannerPath(
+                              waypoints,
+                              ppConstraints,
+                              new IdealStartingState(
+                                  linearSpeeds.getNorm(), getStateCopy().Pose.getRotation()),
+                              new GoalEndState(0, target.getRotation()));
+                      return new FollowPathCommand(
+                          path,
+                          () -> getStateCopy().Pose,
+                          () -> getStateCopy().Speeds,
+                          (speeds, feedforwards) ->
+                              setControl(
+                                  applyRobotSpeeds
+                                      .withSpeeds(speeds)
+                                      .withWheelForceFeedforwardsX(
+                                          feedforwards.robotRelativeForcesXNewtons())
+                                      .withWheelForceFeedforwardsY(
+                                          feedforwards.robotRelativeForcesYNewtons())),
+                          new PPHolonomicDriveController(translationConstants, rotationConstants),
+                          ppRobotConfig,
+                          () -> false,
+                          this);
                     })
                 .unless(() -> IsAtPose(target, convergeTolerance)),
             HoldState(target, new ChassisSpeeds()))

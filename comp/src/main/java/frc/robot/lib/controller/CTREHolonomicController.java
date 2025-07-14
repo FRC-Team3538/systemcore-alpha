@@ -112,6 +112,7 @@ public class CTREHolonomicController {
     RJLog.log("CTREController/Y", yFeedback);
     RJLog.log("CTREController/Theta", rotationFeedback);
 
-    return new ChassisSpeeds( xFF + xFeedback, yFF + yFeedback, rotationFF + rotationFeedback).toRobotRelative(currentPose.getRotation());
+    return new ChassisSpeeds(xFF + xFeedback, yFF + yFeedback, rotationFF + rotationFeedback)
+        .toRobotRelative(currentPose.getRotation());
   }
 }

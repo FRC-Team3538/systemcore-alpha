@@ -28,8 +28,7 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     RobotController.setBrownoutVoltage(Volts.of(6));
-    RJLog.setOptions(
-        new DogLogOptions().withCaptureNt(true).withCaptureDs(true));
+    RJLog.setOptions(new DogLogOptions().withCaptureNt(true).withCaptureDs(true));
     RJLog.setEnabled(true);
     m_robotContainer = new RobotContainer();
     // LoggedCommandScheduler.init(CommandScheduler.getInstance());
@@ -68,26 +67,25 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     Threads.setCurrentThreadPriority(true, 1);
 
-    CANSignalManager.refreshSignals();;
+    CANSignalManager.refreshSignals();
     CommandScheduler.getInstance().run();
     // Tracer.traceFunc("LoggedCommandScheduler::periodic", LoggedCommandScheduler::periodic);
 
-          RJLog.log("ControlMode", m_robotContainer.controlModeManager.getCurrentMode());
-          RJLog.log(
-              "SuperStructure/TargetState",
-              m_robotContainer.superstructure.getTargetScoringConfiguration());
-          RJLog.log(
-              "SuperStructure/CurrentState",
-              m_robotContainer.superstructure.getCurrentConfiguration());
+    RJLog.log("ControlMode", m_robotContainer.controlModeManager.getCurrentMode());
+    RJLog.log(
+        "SuperStructure/TargetState",
+        m_robotContainer.superstructure.getTargetScoringConfiguration());
+    RJLog.log(
+        "SuperStructure/CurrentState", m_robotContainer.superstructure.getCurrentConfiguration());
 
-          SmartDashboard.putString(
-              "ControlMode", m_robotContainer.controlModeManager.getCurrentMode().toString());
-          SmartDashboard.putString(
-              "SuperStructure/TargetState",
-              m_robotContainer.superstructure.getTargetScoringConfiguration().toString());
-          SmartDashboard.putString(
-              "SuperStructure/CurrentState",
-              m_robotContainer.superstructure.getCurrentConfiguration().toString());
+    SmartDashboard.putString(
+        "ControlMode", m_robotContainer.controlModeManager.getCurrentMode().toString());
+    SmartDashboard.putString(
+        "SuperStructure/TargetState",
+        m_robotContainer.superstructure.getTargetScoringConfiguration().toString());
+    SmartDashboard.putString(
+        "SuperStructure/CurrentState",
+        m_robotContainer.superstructure.getCurrentConfiguration().toString());
 
     Threads.setCurrentThreadPriority(false, 10);
   }

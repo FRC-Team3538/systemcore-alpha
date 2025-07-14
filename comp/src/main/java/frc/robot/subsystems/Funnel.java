@@ -7,7 +7,6 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -73,8 +72,7 @@ public class Funnel extends SubsystemBase {
   }
 
   public Command FunnelSolenoidStop() {
-    return run(() -> FunnelSolenoid.set(config.standbyPower()))
-        .withName("FunnelSolenoid::Standby");
+    return run(() -> FunnelSolenoid.set(config.standbyPower())).withName("FunnelSolenoid::Standby");
   }
 
   // Old Trigger

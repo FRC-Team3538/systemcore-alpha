@@ -1,17 +1,15 @@
 package frc.robot.subsystems;
 
-
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.Constants.LEDConfig;
-import java.util.function.BooleanSupplier;
-
 import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants.LEDConfig;
+import java.util.function.BooleanSupplier;
 
 public class LEDs extends SubsystemBase {
   private CANdle candle;
@@ -34,7 +32,7 @@ public class LEDs extends SubsystemBase {
   }
 
   private void setColor(Color color) {
-    SolidColor animation = new SolidColor(0,-1).withColor(new RGBWColor(color));
+    SolidColor animation = new SolidColor(0, -1).withColor(new RGBWColor(color));
     candle.setControl(animation);
   }
 
@@ -58,7 +56,7 @@ public class LEDs extends SubsystemBase {
 
   public Command BlinkColorCommand(Color color) {
     StrobeAnimation strobe =
-        new StrobeAnimation(0,-1).withColor(new RGBWColor(color)).withFrameRate(0.25);
+        new StrobeAnimation(0, -1).withColor(new RGBWColor(color)).withFrameRate(0.25);
     return run(() -> {
           candle.setControl(strobe);
         })

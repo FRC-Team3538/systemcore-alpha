@@ -235,33 +235,30 @@ public abstract class LinearMechanism extends SubsystemBase {
             manualCommand(() -> -0.2),
             print(String.format("Zeroing %s", getName())),
             Commands.runOnce(
-                    () ->
-                        motor
-                            .getConfigurator()
-                            .apply(
-                                motorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(false),
-                                0)))
-                // .traced("ApplyMotorConfig"))
+                () ->
+                    motor
+                        .getConfigurator()
+                        .apply(
+                            motorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(false), 0)))
+        // .traced("ApplyMotorConfig"))
         // .traced("pulldown")
         .andThen(
             Commands.runOnce(
-                    () -> {
-                      motor.setPosition(config.MinPosition().in(Meters) / config.DrumRatio(), 0);
-                      zeroed = true;
-                      motor.stopMotor();
-                    }),
-                // .traced("FinalizeZero"),
+                () -> {
+                  motor.setPosition(config.MinPosition().in(Meters) / config.DrumRatio(), 0);
+                  zeroed = true;
+                  motor.stopMotor();
+                }),
+            // .traced("FinalizeZero"),
             print(String.format("Zeroed %s", getName())))
         .finallyDo(
             () ->
                 // Tracer.traceFunc(
                 //     "ApplyMotorConfig",
                 //     () ->
-                        motor
-                            .getConfigurator()
-                            .apply(
-                                motorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(true),
-                                0))
+                motor
+                    .getConfigurator()
+                    .apply(motorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(true), 0))
         .withName(String.format("%s::Zero", getName()));
   }
 

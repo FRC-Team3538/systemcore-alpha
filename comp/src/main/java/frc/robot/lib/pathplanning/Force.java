@@ -98,7 +98,7 @@ public class Force implements Interpolatable<Force>, ProtobufSerializable, Struc
   /**
    * Calculates the distance between two translations in 2D space.
    *
-   * <p>The distance between translations is defined as 
+   * <p>The distance between translations is defined as
    *
    * @param other The translation to compute the distance to.
    * @return The distance between the two translations.

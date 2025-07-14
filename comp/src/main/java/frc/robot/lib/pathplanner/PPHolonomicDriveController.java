@@ -133,7 +133,8 @@ public class PPHolonomicDriveController implements PathFollowingController {
     RJLog.log("PPController/Y", yFeedback);
     RJLog.log("PPController/Theta", rotationFeedback);
 
-    return new ChassisSpeeds(xFF + xFeedback, yFF + yFeedback, rotationFF + rotationFeedback).toRobotRelative(currentPose.getRotation());
+    return new ChassisSpeeds(xFF + xFeedback, yFF + yFeedback, rotationFF + rotationFeedback)
+        .toRobotRelative(currentPose.getRotation());
   }
 
   /**

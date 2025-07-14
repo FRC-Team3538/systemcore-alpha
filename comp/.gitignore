@@ -185,3 +185,12 @@ compile_commands.json
 
 # Eclipse generated file for annotation processors
 .factorypath
+
+
+# robojacket stuff
+BuildConstants.java
+
+*.hoot
+*.wpilog
+networktables.json.bck
+simgui-ds.json

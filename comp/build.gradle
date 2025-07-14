@@ -1,12 +1,14 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO2027" version "2027.0.0-alpha-1"
+    id 'com.diffplug.spotless' version '7.1.0'
+    id "com.peterabeles.gversion" version "1.10.3"
+    id 'org.hidetake.ssh' version '2.12.0'
 }
 
 repositories {
     mavenLocal()
     maven {url "https://jitpack.io"}
-    
 }
 
 java {
@@ -40,7 +42,7 @@ deploy {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/systemcore/deploy'
                     deleteOldFiles = false // Change to true to delete files on systemcore that no
-                                           // longer exist in deploy directory of this project
+                    // longer exist in deploy directory of this project
                 }
             }
         }
@@ -95,7 +97,11 @@ wpi.sim.addDriverstation()
 // in order to make them all available at runtime. Also adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
     from sourceSets.main.allSource
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -109,4 +115,95 @@ wpi.java.configureTestTasks(test)
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
+}
+
+spotless {
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        toggleOffOn()
+        googleJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+        leadingTabsToSpaces(4)
+    }
+    groovyGradle {
+        target fileTree('.') {
+            include '**/*.gradle'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        greclipse()
+        indentWithSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format 'xml', {
+        target fileTree('.') {
+            include '**/*.xml'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        eclipseWtp('xml')
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
+    format 'misc', {
+        target fileTree('.') {
+            include '**/*.md', '**/.gitignore'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
+}
+
+compileJava.dependsOn spotlessApply
+
+// Create version file
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+    srcDir       = "src/main/java/"
+    classPackage = "frc.robot.constants"
+    className    = "BuildConstants"
+    dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+    timeZone     = "America/New_York"
+    indent       = "  "
+}
+
+ssh.settings {
+    dryRun = project.hasProperty('dryRun')
+}
+
+remotes {
+    rio3538 {
+        host = 'robot.local'
+        user = 'systemcore'
+        password = 'systemcore'
+    }
+}
+
+task backupNTConfig {
+    doLast {
+        ssh.run {
+            session(remotes.rio3538) {
+                execute 'cp /home/systemcore/networktables.json /U/networktables.json'
+                execute 'cp /home/systemcore/networktables.json.bck /U/networktables.json.bck'
+            }
+        }
+    }
+}
+
+task restoreNTConfig {
+    doLast {
+        ssh.run {
+            session(remotes.rio3538) {
+                execute 'cp /U/networktables.json /home/systemcore/networktables.json'
+                execute 'cp /U/networktables.json.bck /home/systemcore/networktables.json.bck'
+            }
+        }
+    }
 }

@@ -65,8 +65,7 @@ public class AutoAlignToBranch extends Command {
 
     xController.reset(currentState.Pose.getX(), currentSpeeds.vx);
     yController.reset(currentState.Pose.getY(), currentSpeeds.vy);
-    rotationController.reset(
-        currentState.Pose.getRotation().getRadians(), currentSpeeds.omega);
+    rotationController.reset(currentState.Pose.getRotation().getRadians(), currentSpeeds.omega);
 
     RJLog.log(String.format("%s/InitialState", prefix), currentState);
     RJLog.log(String.format("%s/TargetTag", prefix), closestTag);

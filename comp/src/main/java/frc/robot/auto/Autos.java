@@ -346,8 +346,7 @@ public class Autos {
 
     if (firstPath) {
       var approachCmd = approach.cmd();
-      start.onTrue(
-          approach.resetOdometry().andThen(approachCmd).withName(approachCmd.getName()));
+      start.onTrue(approach.resetOdometry().andThen(approachCmd).withName(approachCmd.getName()));
     } else {
       coralInMech
           .and(approach.inactive())
