@@ -61,12 +61,12 @@ public class AutoAlignToBranch extends Command {
     targetPose = fieldConstants.RobotPose(closestTag, side);
 
     ChassisSpeeds currentSpeeds =
-        ChassisSpeeds.fromRobotRelativeSpeeds(currentState.Speeds, currentState.Pose.getRotation());
+        currentState.Speeds.toFieldRelative(currentState.Pose.getRotation());
 
-    xController.reset(currentState.Pose.getX(), currentSpeeds.vxMetersPerSecond);
-    yController.reset(currentState.Pose.getY(), currentSpeeds.vyMetersPerSecond);
+    xController.reset(currentState.Pose.getX(), currentSpeeds.vx);
+    yController.reset(currentState.Pose.getY(), currentSpeeds.vy);
     rotationController.reset(
-        currentState.Pose.getRotation().getRadians(), currentSpeeds.omegaRadiansPerSecond);
+        currentState.Pose.getRotation().getRadians(), currentSpeeds.omega);
 
     RJLog.log(String.format("%s/InitialState", prefix), currentState);
     RJLog.log(String.format("%s/TargetTag", prefix), closestTag);

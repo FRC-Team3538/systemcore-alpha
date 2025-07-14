@@ -195,9 +195,10 @@ public class TunerConstants {
      * Creates a CommandSwerveDrivetrain instance.
      * This should only be called once in your robot program,.
      */
+    private static double ODOMETRY_FREQUENCY = 600;
     public static CommandSwerveDrivetrain createDrivetrain() {
         return new CommandSwerveDrivetrain(
-            DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
+            DrivetrainConstants, ODOMETRY_FREQUENCY, FrontLeft, FrontRight, BackLeft, BackRight
         );
     }
 

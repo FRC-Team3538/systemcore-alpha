@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.oi.ControlMode.CLIMB_MODE;
@@ -21,17 +22,17 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj3.RobotBase;
-import edu.wpi.first.wpilibj3.Tracer;
 import frc.robot.auto.Autos;
 import frc.robot.constants.Constants.AlgaeArmConfig;
 import frc.robot.constants.Constants.AlgaeMechConfig;
@@ -149,20 +150,15 @@ public class RobotContainer {
     brakeModeTask =
         new Notifier(
             () -> {
-              Tracer.traceFunc(
-                  "Drivetrain::setBrakeMode",
-                  () -> drivetrain.configNeutralMode(NeutralModeValue.Brake));
-              Tracer.traceFunc("Elevator::setBrakeMode", elevator::setBrakeMode);
+              drivetrain.configNeutralMode(NeutralModeValue.Brake);
+              elevator.setBrakeMode();
             });
 
     coastModeTask =
         new Notifier(
             () -> {
-              Tracer.traceFunc(
-                  "Drivetrain::setCoastMode",
-                  () -> drivetrain.configNeutralMode(NeutralModeValue.Coast));
-              Tracer.traceFunc("Elevator::setCoastMode", elevator::setCoastMode);
-            });
+              drivetrain.configNeutralMode(NeutralModeValue.Coast);
+            elevator.setCoastMode();            });
   }
 
   private void configureBehavior() {
@@ -187,7 +183,7 @@ public class RobotContainer {
 
     RobotModeTriggers.disabled()
         .whileTrue(
-            waitSeconds(5)
+            Commands.waitTime(Milliseconds.of(5))
                 .andThen(
                     runOnce(
                             () -> {
@@ -233,7 +229,6 @@ public class RobotContainer {
     RobotModeTriggers.disabled().whileTrue(drivetrain.stopCommand());
 
     RobotModeTriggers.autonomous()
-        .traced("Triggers/IsAutonomous")
         .whileTrue(autoChooser.selectedCommandScheduler().withName("Auton::SelectedCommand"));
   }
 
@@ -811,7 +806,7 @@ public class RobotContainer {
     return coralMech
         .Score(() -> scoreState)
         .deadlineFor(
-            waitSeconds(SuperstructureConfig.DEFAULT.AutoScoreBumpUpWaitTime().in(Seconds))
+            Commands.wait(SuperstructureConfig.DEFAULT.AutoScoreBumpUpWaitTime().in(Seconds))
                 .andThen(
                     elevator
                         .defer(
@@ -828,7 +823,7 @@ public class RobotContainer {
                 coralMech
                     .Score(superstructure::getCurrentConfiguration)
                     .deadlineFor(
-                        waitSeconds(
+                        Commands.wait(
                                 SuperstructureConfig.DEFAULT.AutoScoreBumpUpWaitTime().in(Seconds))
                             .andThen(
                                 deferredProxy(

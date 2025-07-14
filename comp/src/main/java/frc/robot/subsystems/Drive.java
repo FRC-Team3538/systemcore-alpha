@@ -79,7 +79,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj3.Tracer;
 import frc.robot.commands.AutoAlignToBranch;
 import frc.robot.constants.Constants.ControlsConfig;
 import frc.robot.constants.FieldConstants;
@@ -422,9 +421,9 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
               var input = fieldCentricInput.get();
 
               return fieldCentric
-                  .withVelocityX(input.vxMetersPerSecond)
-                  .withVelocityY(input.vyMetersPerSecond)
-                  .withRotationalRate(input.omegaRadiansPerSecond);
+                  .withVelocityX(input.vx)
+                  .withVelocityY(input.vy)
+                  .withRotationalRate(input.omega);
             })
         .withName("Drive::FieldCentric");
   }
@@ -435,9 +434,9 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
               var input = robotCentricInput.get();
 
               return robotCentric
-                  .withVelocityX(input.vxMetersPerSecond)
-                  .withVelocityY(input.vyMetersPerSecond)
-                  .withRotationalRate(input.omegaRadiansPerSecond);
+                  .withVelocityX(input.vx)
+                  .withVelocityY(input.vy)
+                  .withRotationalRate(input.omega);
             })
         .withName("Drive::RobotCentric");
   }
@@ -449,8 +448,8 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
               var input = fieldCentricInput.get();
 
               return fieldCentricFacingAngle
-                  .withVelocityX(input.vxMetersPerSecond)
-                  .withVelocityY(input.vyMetersPerSecond)
+                  .withVelocityX(input.vx)
+                  .withVelocityY(input.vy)
                   .withTargetDirection(heading.get());
             })
         .withName("Drive::FieldCentricFacingAngle");
@@ -463,8 +462,8 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
               var input = robotCentricInput.get();
 
               return robotCentricFacingAngle
-                  .withVelocityX(input.vxMetersPerSecond)
-                  .withVelocityY(input.vyMetersPerSecond)
+                  .withVelocityX(input.vx)
+                  .withVelocityY(input.vy)
                   .withTargetDirection(heading.get());
             })
         .withName("Drive::RobotCentricFacingAngle");
@@ -477,8 +476,8 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
               var input = fieldCentricInput.get();
 
               return fieldCentricFacingPoint
-                  .withVelocityX(input.vxMetersPerSecond)
-                  .withVelocityY(input.vyMetersPerSecond)
+                  .withVelocityX(input.vx)
+                  .withVelocityY(input.vy)
                   .withTargetPoint(target.get());
             })
         .withName("Drive::FieldCentricFacingTarget");
@@ -491,8 +490,8 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
               var input = robotCentricInput.get();
 
               return robotCentricFacingPoint
-                  .withVelocityX(input.vxMetersPerSecond)
-                  .withVelocityY(input.vyMetersPerSecond)
+                  .withVelocityX(input.vx)
+                  .withVelocityY(input.vy)
                   .withTargetPoint(target.get());
             })
         .withName("Drive::RobotCentricFacingTarget");
@@ -501,9 +500,9 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
   public void followPath(SwerveSample sample) {
     var pose = getStateCopy().Pose;
     var targetSpeeds = sample.getChassisSpeeds();
-    targetSpeeds.vxMetersPerSecond += pathXController.calculate(pose.getX(), sample.x);
-    targetSpeeds.vyMetersPerSecond += pathYController.calculate(pose.getY(), sample.y);
-    targetSpeeds.omegaRadiansPerSecond +=
+    targetSpeeds.vx += pathXController.calculate(pose.getX(), sample.x);
+    targetSpeeds.vy += pathYController.calculate(pose.getY(), sample.y);
+    targetSpeeds.omega +=
         pathThetaController.calculate(pose.getRotation().getRadians(), sample.heading);
 
     RJLog.log(
@@ -512,7 +511,7 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
     RJLog.log("Drive/Path/Speeds", sample.getChassisSpeeds());
     RJLog.log(
         "Drive/Path/MeasuredSpeeds",
-        ChassisSpeeds.fromRobotRelativeSpeeds(getStateCopy().Speeds, pose.getRotation()));
+        getStateCopy().Speeds.toFieldRelative(pose.getRotation()));
     RJLog.log("Drive/Path/SpeedsWithPID", targetSpeeds);
 
     setControl(
@@ -598,17 +597,17 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
       var input = driver.robotCentric(controlMode);
 
       return robotCentric
-          .withVelocityX(input.vxMetersPerSecond)
-          .withVelocityY(input.vyMetersPerSecond)
-          .withRotationalRate(input.omegaRadiansPerSecond);
+          .withVelocityX(input.vx)
+          .withVelocityY(input.vy)
+          .withRotationalRate(input.omega);
     }
 
     var input = driver.fieldCentric(controlMode);
 
     return fieldCentric
-        .withVelocityX(input.vxMetersPerSecond)
-        .withVelocityY(input.vyMetersPerSecond)
-        .withRotationalRate(input.omegaRadiansPerSecond);
+        .withVelocityX(input.vx)
+        .withVelocityY(input.vy)
+        .withRotationalRate(input.omega);
   }
 
   public SwerveRequest headingSnap(
@@ -639,16 +638,16 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
     if (driver.shouldUseRobotCentric()) {
       var input = driver.robotCentric(controlMode);
       return robotCentricFacingAngle
-          .withVelocityX(input.vxMetersPerSecond)
-          .withVelocityY(input.vyMetersPerSecond)
+          .withVelocityX(input.vx)
+          .withVelocityY(input.vy)
           .withTargetDirection(target);
     }
 
     var input = driver.fieldCentric(controlMode);
 
     return fieldCentricFacingAngle
-        .withVelocityX(input.vxMetersPerSecond)
-        .withVelocityY(input.vyMetersPerSecond)
+        .withVelocityX(input.vx)
+        .withVelocityY(input.vy)
         .withTargetDirection(target);
   }
 
@@ -658,16 +657,16 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
       var input = driver.robotCentric(controlMode);
 
       return robotCentricFacingPoint
-          .withVelocityX(input.vxMetersPerSecond)
-          .withVelocityY(input.vyMetersPerSecond)
+          .withVelocityX(input.vx)
+          .withVelocityY(input.vy)
           .withTargetPoint(target);
     }
 
     var input = driver.fieldCentric(controlMode);
 
     return fieldCentricFacingPoint
-        .withVelocityX(input.vxMetersPerSecond)
-        .withVelocityY(input.vyMetersPerSecond)
+        .withVelocityX(input.vx)
+        .withVelocityY(input.vy)
         .withTargetPoint(target);
   }
 
@@ -1091,62 +1090,49 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
 
     return sequence(
             run(() -> {
-                  var state = Tracer.traceFunc("getStateCopy", this::getStateCopy);
-                  var orientation =
-                      Tracer.traceFunc("headingOverride", () -> headingOverride.apply(state));
+                  var state = getStateCopy();
+                  var orientation = headingOverride.apply(state);
 
                   var input =
-                      Tracer.traceFunc(
-                          "repulsor",
-                          () ->
                               repulsor.sampleField(
                                   state.Pose.getTranslation(),
                                   target.getTranslation(),
                                   orientation,
                                   TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
-                                  2.5));
+                                  2.5);
 
-                  Tracer.traceFunc("followPath", () -> followPath(input));
+                  followPath(input);
                 })
                 .until(() -> IsAtPose(target, approachTolerance)),
             defer(
                     () -> {
-                      if (Tracer.traceFunc("IsAtPose", () -> IsAtPose(target, convergeTolerance))) {
+                      if (IsAtPose(target, convergeTolerance)) {
                         return none();
                       }
 
-                      var state = Tracer.traceFunc("getStateCopy", this::getStateCopy);
+                      var state = getStateCopy();
                       var fieldRelativeSpeeds =
-                          ChassisSpeeds.fromRobotRelativeSpeeds(
-                              state.Speeds, state.Pose.getRotation());
+                          state.Speeds.toFieldRelative(state.Pose.getRotation());
 
                       var linearSpeeds =
                           new Translation2d(
-                              fieldRelativeSpeeds.vxMetersPerSecond,
-                              fieldRelativeSpeeds.vyMetersPerSecond);
+                              fieldRelativeSpeeds.vx,
+                              fieldRelativeSpeeds.vy);
 
-                      var waypoints =
-                          Tracer.traceFunc(
-                              "PathPlannerPath.waypointsFromPoses",
-                              () ->
+                      var waypoints = 
                                   PathPlannerPath.waypointsFromPoses(
                                       new Pose2d(
                                           state.Pose.getTranslation(), linearSpeeds.getAngle()),
-                                      target));
-                      var path =
-                          Tracer.traceFunc(
-                              "new PathPlannerPath",
-                              () ->
+                                      target);
+                      var path = 
                                   new PathPlannerPath(
                                       waypoints,
                                       ppConstraints,
                                       new IdealStartingState(
                                           linearSpeeds.getNorm(),
                                           getStateCopy().Pose.getRotation()),
-                                      new GoalEndState(0, target.getRotation())));
-                      return Tracer.traceFunc(
-                          "new FollowPathCommand",
-                          () ->
+                                      new GoalEndState(0, target.getRotation()));
+                      return 
                               new FollowPathCommand(
                                       path,
                                       () -> getStateCopy().Pose,
@@ -1163,11 +1149,9 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
                                           translationConstants, rotationConstants),
                                       ppRobotConfig,
                                       () -> false,
-                                      this)
-                                  .traced("AutoAlignFinalApproachInner"));
+                                      this);
                     })
-                .unless(() -> IsAtPose(target, convergeTolerance))
-                .traced("AutoAlignFinalApproach"),
+                .unless(() -> IsAtPose(target, convergeTolerance)),
             HoldState(target, new ChassisSpeeds()))
         .withName("Drive::PathToPoseRepulsor");
   }

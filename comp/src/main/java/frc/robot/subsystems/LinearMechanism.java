@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import edu.wpi.first.wpilibj3.Tracer;
 import frc.robot.constants.Constants.LinearMechanismConfig;
 import frc.robot.constants.Constants.LinearSimConfig;
 import frc.robot.constants.Constants.TalonFXID;
@@ -230,7 +229,7 @@ public abstract class LinearMechanism extends SubsystemBase {
   }
 
   public Command zeroCommand() {
-    return waitSeconds(0.1)
+    return Commands.wait(0.1)
         .andThen(waitUntil(() -> velocitySignal.getValue().gt(RotationsPerSecond.of(-0.1))))
         .deadlineFor(
             manualCommand(() -> -0.2),
@@ -241,28 +240,28 @@ public abstract class LinearMechanism extends SubsystemBase {
                             .getConfigurator()
                             .apply(
                                 motorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(false),
-                                0))
-                .traced("ApplyMotorConfig"))
-        .traced("pulldown")
+                                0)))
+                // .traced("ApplyMotorConfig"))
+        // .traced("pulldown")
         .andThen(
             Commands.runOnce(
                     () -> {
                       motor.setPosition(config.MinPosition().in(Meters) / config.DrumRatio(), 0);
                       zeroed = true;
                       motor.stopMotor();
-                    })
-                .traced("FinalizeZero"),
+                    }),
+                // .traced("FinalizeZero"),
             print(String.format("Zeroed %s", getName())))
         .finallyDo(
             () ->
-                Tracer.traceFunc(
-                    "ApplyMotorConfig",
-                    () ->
+                // Tracer.traceFunc(
+                //     "ApplyMotorConfig",
+                //     () ->
                         motor
                             .getConfigurator()
                             .apply(
                                 motorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(true),
-                                0)))
+                                0))
         .withName(String.format("%s::Zero", getName()));
   }
 
@@ -287,8 +286,8 @@ public abstract class LinearMechanism extends SubsystemBase {
     simState.setReverseLimit(elevatorSim.hasHitLowerLimit());
 
     simState.setRawRotorPosition(
-        elevatorSim.getPositionMeters() / config.DrumRatio() / config.GearboxRatio());
+        elevatorSim.getPosition() / config.DrumRatio() / config.GearboxRatio());
     simState.setRotorVelocity(
-        elevatorSim.getVelocityMetersPerSecond() / config.DrumRatio() / config.GearboxRatio());
+        elevatorSim.getVelocity() / config.DrumRatio() / config.GearboxRatio());
   }
 }

@@ -10,7 +10,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.print;
-import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 
 import com.ctre.phoenix6.StatusSignal;
@@ -34,7 +33,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import edu.wpi.first.wpilibj3.Tracer;
 import frc.robot.constants.Constants.AngularMechanismConfig;
 import frc.robot.constants.Constants.AngularSimConfig;
 import frc.robot.constants.Constants.TalonFXID;
@@ -230,7 +228,7 @@ public abstract class AngularMechanism extends SubsystemBase {
   }
 
   public Command zeroCommand() {
-    return waitSeconds(0.1)
+    return Commands.wait(0.1)
         .andThen(
             waitUntil(
                 () ->
@@ -245,32 +243,32 @@ public abstract class AngularMechanism extends SubsystemBase {
                             .getConfigurator()
                             .apply(
                                 motorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(false),
-                                0))
-                .traced("ApplyMotorConfig"))
+                                0)))
+                // .traced("ApplyMotorConfig"))
         .andThen(
             Commands.runOnce(
                     () -> {
                       motor.setPosition(config.MinPosition().in(Rotations), 0);
                       zeroed = true;
                       motor.stopMotor();
-                    })
-                .traced("FinalizeZero"),
+                    }),
+                // .traced("FinalizeZero"),
             print(String.format("Zeroed %s", getName())))
         .finallyDo(
             () ->
-                Tracer.traceFunc(
-                    "ApplyMotorConfig",
-                    () ->
+                // Tracer.traceFunc(
+                //     "ApplyMotorConfig",
+                //     () ->
                         motor
                             .getConfigurator()
                             .apply(
                                 motorConfig.SoftwareLimitSwitch.withReverseSoftLimitEnable(true),
-                                0)))
+                                0))
         .withName(String.format("%s::Zero(%s)", getName(), Direction.kReverse));
   }
 
   public Command zeroForwardCommand() {
-    return waitSeconds(0.1)
+    return Commands.wait(0.1)
         .andThen(
             waitUntil(
                 () ->
@@ -285,27 +283,27 @@ public abstract class AngularMechanism extends SubsystemBase {
                             .getConfigurator()
                             .apply(
                                 motorConfig.SoftwareLimitSwitch.withForwardSoftLimitEnable(false),
-                                0))
-                .traced("ApplyMotorConfig"))
+                                0)))
+                // .traced("ApplyMotorConfig"))
         .andThen(
             Commands.runOnce(
                     () -> {
                       motor.setPosition(config.MaxPosition().in(Rotations), 0);
                       zeroed = true;
                       motor.stopMotor();
-                    })
-                .traced("FinalizeZero"),
+                    }),
+                // .traced("FinalizeZero"),
             print(String.format("Zeroed %s", getName())))
         .finallyDo(
             () ->
-                Tracer.traceFunc(
-                    "ApplyMotorConfig",
-                    () ->
+                // Tracer.traceFunc(
+                //     "ApplyMotorConfig",
+                //     () ->
                         motor
                             .getConfigurator()
                             .apply(
                                 motorConfig.SoftwareLimitSwitch.withForwardSoftLimitEnable(true),
-                                0)))
+                                0))
         .withName(String.format("%s::Zero(%s)", getName(), Direction.kForward));
   }
 
@@ -330,8 +328,8 @@ public abstract class AngularMechanism extends SubsystemBase {
     simState.setReverseLimit(armSim.hasHitLowerLimit());
 
     simState.setRawRotorPosition(
-        Units.radiansToRotations(armSim.getAngleRads()) / config.GearboxRatio());
+        Units.radiansToRotations(armSim.getAngle()) / config.GearboxRatio());
     simState.setRotorVelocity(
-        Units.radiansToRotations(armSim.getVelocityRadPerSec()) / config.GearboxRatio());
+        Units.radiansToRotations(armSim.getVelocity()) / config.GearboxRatio());
   }
 }

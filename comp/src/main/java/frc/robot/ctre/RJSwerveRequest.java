@@ -115,13 +115,13 @@ public class RJSwerveRequest {
                   parameters.timestamp);
 
       ChassisSpeeds toApply =
-          ChassisSpeeds.fromFieldRelativeSpeeds(VelocityX, VelocityY, toApplyOmega, HeadingOffset);
+          new ChassisSpeeds(VelocityX, VelocityY, toApplyOmega).toRobotRelative(HeadingOffset);
 
       // Todo - maybe I need to do something with the forward perspective?
       return m_fieldCentric
-          .withVelocityX(toApply.vxMetersPerSecond)
-          .withVelocityY(toApply.vyMetersPerSecond)
-          .withRotationalRate(toApply.omegaRadiansPerSecond)
+          .withVelocityX(toApply.vx)
+          .withVelocityY(toApply.vy)
+          .withRotationalRate(toApply.omega)
           .withDeadband(Deadband)
           .withRotationalDeadband(RotationalDeadband)
           .withCenterOfRotation(CenterOfRotation)
@@ -432,12 +432,12 @@ public class RJSwerveRequest {
                   parameters.timestamp);
 
       ChassisSpeeds toApply =
-          ChassisSpeeds.fromRobotRelativeSpeeds(VelocityX, VelocityY, toApplyOmega, HeadingOffset);
+          new ChassisSpeeds(VelocityX, VelocityY, toApplyOmega).toFieldRelative(HeadingOffset);
 
       return m_robotCentric
-          .withVelocityX(toApply.vxMetersPerSecond)
-          .withVelocityY(toApply.vyMetersPerSecond)
-          .withRotationalRate(toApply.omegaRadiansPerSecond)
+          .withVelocityX(toApply.vx)
+          .withVelocityY(toApply.vy)
+          .withRotationalRate(toApply.omega)
           .withDeadband(Deadband)
           .withRotationalDeadband(RotationalDeadband)
           .withCenterOfRotation(CenterOfRotation)
@@ -832,16 +832,16 @@ public class RJSwerveRequest {
       ChassisSpeeds toApply =
           Controller.calculate(parameters.currentPose, TargetPose, Speeds, parameters.timestamp);
 
-      if (Math.abs(toApply.vxMetersPerSecond) < 0.02) {
-        toApply.vxMetersPerSecond = 0;
+      if (Math.abs(toApply.vx) < 0.02) {
+        toApply.vx = 0;
       }
 
-      if (Math.abs(toApply.vyMetersPerSecond) < 0.02) {
-        toApply.vyMetersPerSecond = 0;
+      if (Math.abs(toApply.vy) < 0.02) {
+        toApply.vy = 0;
       }
 
-      if (Math.abs(toApply.omegaRadiansPerSecond) < 0.02) {
-        toApply.omegaRadiansPerSecond = 0;
+      if (Math.abs(toApply.omega) < 0.02) {
+        toApply.omega = 0;
       }
 
       return m_robotCentric

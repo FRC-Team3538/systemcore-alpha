@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj3.Tracer;
 import frc.robot.constants.VisionConstants;
 import frc.robot.lib.RJLog;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
@@ -151,14 +150,14 @@ public class Vision extends SubsystemBase {
     SmartDashboard.putBoolean("Vision/enabled", enabled);
     pvSettingPublisher.accept(Preferences.getBoolean("Photonvision/UseNewFrametime", false));
 
-    Tracer.startTrace("updateInputs");
+    // Tracer.startTrace("updateInputs");
     for (int i = 0; i < io.length; i++) {
-      Tracer.startTrace(io[i].getName());
+      // Tracer.startTrace(io[i].getName());
       io[i].updateInputs(inputs[i]);
       RJLog.log(String.format("Vision/Camera-%s/Inputs", inputs[i].name), inputs[i]);
-      Tracer.endTrace();
+      // Tracer.endTrace();
     }
-    Tracer.endTrace();
+    // Tracer.endTrace();
 
     // Initialize logging values
     List<Pose3d> allTagPoses = new LinkedList<>();
@@ -167,9 +166,9 @@ public class Vision extends SubsystemBase {
     List<Pose3d> allRobotPosesRejected = new LinkedList<>();
 
     // Loop over cameras
-    Tracer.startTrace("filterInputs");
+    // Tracer.startTrace("filterInputs");
     for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
-      Tracer.startTrace(io[cameraIndex].getName());
+      // Tracer.startTrace(io[cameraIndex].getName());
 
       // Update disconnected alert
       disconnectedAlerts[cameraIndex].set(!inputs[cameraIndex].connected);
@@ -181,22 +180,22 @@ public class Vision extends SubsystemBase {
       List<Pose3d> robotPosesRejected = new LinkedList<>();
 
       // Add tag poses
-      Tracer.startTrace("Tags");
+      // Tracer.startTrace("Tags");
       for (int tagId : inputs[cameraIndex].tagIds) {
         var tagPose = aprilTagLayout.getTagPose(tagId);
         if (tagPose.isPresent()) {
           tagPoses.add(tagPose.get());
         }
       }
-      Tracer.endTrace();
+      // Tracer.endTrace();
 
       // Loop over pose observations
-      Tracer.startTrace("ApplyObservations");
+      // Tracer.startTrace("ApplyObservations");
       // Only apply latest 2 observations
       for (int index = max(0, inputs[cameraIndex].poseObservations.length - 2);
           index < inputs[cameraIndex].poseObservations.length;
           index++) {
-        Tracer.startTrace(Integer.toString(index));
+        // Tracer.startTrace(Integer.toString(index));
 
         var observation = inputs[cameraIndex].poseObservations[index];
 
@@ -227,7 +226,7 @@ public class Vision extends SubsystemBase {
 
         // Skip if rejected
         if (rejectPose) {
-          Tracer.endTrace();
+          // Tracer.endTrace();
           continue;
         }
 
@@ -246,7 +245,7 @@ public class Vision extends SubsystemBase {
         }
 
         if (!enabled) {
-          Tracer.endTrace();
+          // Tracer.endTrace();
           continue;
         }
 
@@ -255,12 +254,12 @@ public class Vision extends SubsystemBase {
             observation.pose().toPose2d(),
             observation.timestamp(),
             VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
-        Tracer.endTrace();
+        // Tracer.endTrace();
       }
-      Tracer.endTrace();
+      // Tracer.endTrace();
 
       // Log camera datadata
-      Tracer.startTrace("Logging");
+      // Tracer.startTrace("Logging");
       RJLog.log(
           String.format("Vision/Camera-%s/TagPoses", cameraIndex),
           tagPoses.toArray(new Pose3d[tagPoses.size()]));
@@ -273,15 +272,15 @@ public class Vision extends SubsystemBase {
       RJLog.log(
           String.format("Vision/Camera-%s/RobotPosesRejected", cameraIndex),
           robotPosesRejected.toArray(new Pose3d[robotPosesRejected.size()]));
-      Tracer.endTrace();
+      // Tracer.endTrace();
 
       allTagPoses.addAll(tagPoses);
       allRobotPoses.addAll(robotPoses);
       allRobotPosesAccepted.addAll(robotPosesAccepted);
       allRobotPosesRejected.addAll(robotPosesRejected);
-      Tracer.endTrace();
+      // Tracer.endTrace();
     }
-    Tracer.endTrace();
+    // Tracer.endTrace();
 
     // Log summary data
     RJLog.log("Vision/Summary/TagPoses", allTagPoses.toArray(new Pose3d[allTagPoses.size()]));

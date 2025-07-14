@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
-
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -78,7 +76,7 @@ public class AlgaeMech extends SubsystemBase {
   public Command AutonScore() {
     return RunAlgaePower(config::ScorePower)
         .withTimeout(config.ScoreDelay())
-        .alongWith(waitSeconds(0.25).andThen(Commands.runOnce(() -> algaeLoaded = false)))
+        .alongWith(Commands.wait(0.25).andThen(Commands.runOnce(() -> algaeLoaded = false)))
         .withName("AlgaeMech::AutonScore");
   }
 

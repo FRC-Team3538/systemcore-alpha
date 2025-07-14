@@ -65,8 +65,8 @@ public class Superstructure {
                                 config.IntermediaryElevatorTolerance(),
                                 MetersPerSecond.zero(),
                                 MetersPerSecond.of(1)))
-                    .traced("WaitForElevatorAtPosition")
-                    .andThen(arm.SetpointCommand(target).traced()),
+                    // .traced("WaitForElevatorAtPosition")
+                    .andThen(arm.SetpointCommand(target)),
                 runOnce(() -> currentConfiguration = target)))
         .withName(String.format("Superstructure::%s", target));
   }

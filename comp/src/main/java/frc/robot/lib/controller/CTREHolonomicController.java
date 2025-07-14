@@ -88,14 +88,14 @@ public class CTREHolonomicController {
       Pose2d referencePose,
       ChassisSpeeds referenceSpeeds,
       double currentTimestamp) {
-    double xFF = referenceSpeeds.vxMetersPerSecond;
-    double yFF = referenceSpeeds.vyMetersPerSecond;
-    double rotationFF = referenceSpeeds.omegaRadiansPerSecond;
+    double xFF = referenceSpeeds.vx;
+    double yFF = referenceSpeeds.vy;
+    double rotationFF = referenceSpeeds.omega;
 
     this.poseError = referencePose.relativeTo(currentPose);
 
     if (!this.isEnabled) {
-      return ChassisSpeeds.fromFieldRelativeSpeeds(xFF, yFF, rotationFF, currentPose.getRotation());
+      return new ChassisSpeeds(xFF, yFF, rotationFF).toRobotRelative(currentPose.getRotation());
     }
 
     double xFeedback =
@@ -112,7 +112,6 @@ public class CTREHolonomicController {
     RJLog.log("CTREController/Y", yFeedback);
     RJLog.log("CTREController/Theta", rotationFeedback);
 
-    return ChassisSpeeds.fromFieldRelativeSpeeds(
-        xFF + xFeedback, yFF + yFeedback, rotationFF + rotationFeedback, currentPose.getRotation());
+    return new ChassisSpeeds( xFF + xFeedback, yFF + yFeedback, rotationFF + rotationFeedback).toRobotRelative(currentPose.getRotation());
   }
 }

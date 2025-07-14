@@ -2,7 +2,6 @@ package frc.robot.auto;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
-import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.auto.Setpoint.*;
 import static frc.robot.oi.StructureState.INTAKE_ALGAE_L2;
@@ -19,6 +18,7 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.oi.StructureState;
 import frc.robot.subsystems.AlgaeMech;
@@ -233,7 +233,7 @@ public class Autos {
     } else {
       trajectory.active().onTrue(superstructure.SetpointCommand(prePickupState));
       trajectory.atTimeBeforeEnd(0.3).onTrue(PickAlgae(pickupHeight));
-      trajectory.recentlyDone().and(algaeInMech).onTrue(waitSeconds(0.3).andThen(followup.cmd()));
+      trajectory.recentlyDone().and(algaeInMech).onTrue(Commands.wait(0.3).andThen(followup.cmd()));
     }
   }
 
@@ -347,7 +347,7 @@ public class Autos {
     if (firstPath) {
       var approachCmd = approach.cmd();
       start.onTrue(
-          approach.resetOdometry().traced().andThen(approachCmd).withName(approachCmd.getName()));
+          approach.resetOdometry().andThen(approachCmd).withName(approachCmd.getName()));
     } else {
       coralInMech
           .and(approach.inactive())

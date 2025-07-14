@@ -15,11 +15,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj3.RobotBase;
-import edu.wpi.first.wpilibj3.TimedRobot;
-import edu.wpi.first.wpilibj3.Tracer;
 import frc.robot.constants.FieldGeometry;
 import frc.robot.lib.CANSignalManager;
 import frc.robot.lib.RJLog;
@@ -31,7 +29,7 @@ public class Robot extends TimedRobot {
   public Robot() {
     RobotController.setBrownoutVoltage(Volts.of(6));
     RJLog.setOptions(
-        new DogLogOptions(() -> false, RobotBase.isSimulation(), true, true, true, 200));
+        new DogLogOptions().withCaptureNt(true).withCaptureDs(true));
     RJLog.setEnabled(true);
     m_robotContainer = new RobotContainer();
     // LoggedCommandScheduler.init(CommandScheduler.getInstance());
@@ -60,24 +58,20 @@ public class Robot extends TimedRobot {
         1,
         1);
 
-    if (RobotBase.isReal()) {
+    if (isReal()) {
       // NetworkTableInstance.getDefault()
       //     .startEntryDataLog(DataLogManager.getLog(), "/Tracer", "NT:/Tracer");
     }
-
-    Tracer.disableTracingForCurrentThread();
   }
 
   @Override
   public void robotPeriodic() {
     Threads.setCurrentThreadPriority(true, 1);
 
-    Tracer.traceFunc("CANSignalManager", CANSignalManager::refreshSignals);
+    CANSignalManager.refreshSignals();;
     CommandScheduler.getInstance().run();
     // Tracer.traceFunc("LoggedCommandScheduler::periodic", LoggedCommandScheduler::periodic);
-    Tracer.traceFunc(
-        "Logging",
-        () -> {
+
           RJLog.log("ControlMode", m_robotContainer.controlModeManager.getCurrentMode());
           RJLog.log(
               "SuperStructure/TargetState",
@@ -94,7 +88,6 @@ public class Robot extends TimedRobot {
           SmartDashboard.putString(
               "SuperStructure/CurrentState",
               m_robotContainer.superstructure.getCurrentConfiguration().toString());
-        });
 
     Threads.setCurrentThreadPriority(false, 10);
   }

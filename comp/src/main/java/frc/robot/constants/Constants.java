@@ -457,7 +457,7 @@ public class Constants {
             new CANrangeConfiguration()
                 .withProximityParams(
                     new ProximityParamsConfigs().withMinSignalStrengthForValidMeasurement(20000)),
-            new VictorSPXID(36),
+            new VictorSPXID(1),
             1.0,
             0.0);
   }

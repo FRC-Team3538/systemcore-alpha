@@ -1,7 +1,6 @@
 package frc.robot.lib;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import edu.wpi.first.wpilibj3.Tracer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -36,12 +35,12 @@ public class CANSignalManager {
   /** Refreshes all signals in the CANSignalManager, should be called once per cycle */
   public static void refreshSignals() {
     for (Entry<String, ArrayList<BaseStatusSignal>> entry : signalsDatabase.entrySet()) {
-      Tracer.startTrace(entry.getKey());
+      // Tracer.startTrace(entry.getKey());
       ArrayList<BaseStatusSignal> list = entry.getValue();
       if (list != null && list.size() != 0) {
         BaseStatusSignal.refreshAll(list.toArray(new BaseStatusSignal[list.size()]));
       }
-      Tracer.endTrace();
+      // Tracer.endTrace();
     }
   }
 }
