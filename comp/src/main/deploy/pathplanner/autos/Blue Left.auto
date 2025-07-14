@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start-J"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "J-SL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SL-K"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K-SL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SL-L"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L-SL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SL-A"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": true
+}

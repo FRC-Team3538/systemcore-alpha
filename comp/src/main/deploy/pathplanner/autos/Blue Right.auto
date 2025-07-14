@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start-E"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "E-SR"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SR-D"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "D-SR"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SR-C"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C-SR"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SR-B"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": true
+}
