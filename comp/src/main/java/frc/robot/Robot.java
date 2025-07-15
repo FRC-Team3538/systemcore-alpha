@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Volts;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -13,7 +11,6 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,7 +24,7 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
 
   public Robot() {
-    RobotController.setBrownoutVoltage(Volts.of(6));
+    // RobotController.setBrownoutVoltage(Volts.of(6));
     RJLog.setOptions(new DogLogOptions().withCaptureNt(true).withCaptureDs(true));
     RJLog.setEnabled(true);
     m_robotContainer = new RobotContainer();
