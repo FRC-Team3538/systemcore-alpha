@@ -354,7 +354,7 @@ public class Constants {
     private static final Double ELEVATOR_DRUM_RATIO = 0.15; // Meters per Rotation
     private static final Double ELEVATOR_GEARBOX_RATIO = 42.0 / 10;
     // hard stop
-    private static final Distance ELEVATOR_SOFT_MIN = Inches.of(2);
+    private static final Distance ELEVATOR_SOFT_MIN = Inches.of(0.25);
     private static final Distance ELEVATOR_HARD_MIN = Inches.zero();
     // couple inches before upper hard stop
     private static final Distance ELEVATOR_MAX = Meters.of(2);
