@@ -32,7 +32,7 @@ public class LEDs extends SubsystemBase {
   }
 
   private void setColor(Color color) {
-    SolidColor animation = new SolidColor(0, -1).withColor(new RGBWColor(color));
+    SolidColor animation = new SolidColor(0, 100).withColor(new RGBWColor(color));
     candle.setControl(animation);
   }
 
@@ -56,7 +56,7 @@ public class LEDs extends SubsystemBase {
 
   public Command BlinkColorCommand(Color color) {
     StrobeAnimation strobe =
-        new StrobeAnimation(0, -1).withColor(new RGBWColor(color)).withFrameRate(0.25);
+        new StrobeAnimation(0, 100).withColor(new RGBWColor(color)).withFrameRate(0.25);
     return run(() -> {
           candle.setControl(strobe);
         })
@@ -68,7 +68,7 @@ public class LEDs extends SubsystemBase {
 
   public Command FadeColorCommand(Color color) {
     SingleFadeAnimation fade =
-        new SingleFadeAnimation(0, -1).withFrameRate(0.1).withColor(new RGBWColor(color));
+        new SingleFadeAnimation(0, 100).withFrameRate(0.1).withColor(new RGBWColor(color));
 
     return run(() -> {
           candle.setControl(fade);
