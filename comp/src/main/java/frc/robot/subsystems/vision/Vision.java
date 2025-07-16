@@ -14,7 +14,6 @@
 package frc.robot.subsystems.vision;
 
 import static frc.robot.constants.VisionConstants.*;
-import static java.lang.Math.max;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -191,9 +190,7 @@ public class Vision extends SubsystemBase {
 
       // Loop over pose observations
       // Tracer.startTrace("ApplyObservations");
-      for (int index = 0;
-          index < inputs[cameraIndex].poseObservations.length;
-          index++) {
+      for (int index = 0; index < inputs[cameraIndex].poseObservations.length; index++) {
         // Tracer.startTrace(Integer.toString(index));
 
         var observation = inputs[cameraIndex].poseObservations[index];
