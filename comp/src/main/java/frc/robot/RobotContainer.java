@@ -74,7 +74,7 @@ public class RobotContainer {
 
   private final ControlsConfig controlsConfig = ControlsConfig.DEFAULT;
 
-  private final DriverControls driverControls = new DriverControls(driver.getHID(), controlsConfig);
+  public final DriverControls driverControls = new DriverControls(driver.getHID(), controlsConfig);
 
   private final OperatorControls operatorControls =
       new OperatorControls(operator.getHID(), controlsConfig);

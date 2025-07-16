@@ -49,7 +49,7 @@ public class DriverControls {
   }
 
   public boolean shouldUseRobotCentric() {
-    return driver.getPOV() != -1;
+    return driver.getPOV() != 0;
   }
 
   public boolean shouldManuallyRotate() {
@@ -80,9 +80,26 @@ public class DriverControls {
   private Vector<N2> robotCentricInternal() {
     var pov = driver.getPOV();
 
-    if (pov == -1) {
+    if (pov == 0) {
       return VecBuilder.fill(0, 0);
     } else {
+
+      // i hate this
+      var angles =
+          new int[] {
+            0, 0, // up
+            90, // right
+            45, // up right
+            180, // down
+            0, 135, // down right
+            0, 270, // left
+            315, // up left
+            0, 0, 225, // down left
+            0, 0, 0
+          };
+
+      pov = angles[pov];
+
       var angle = Units.Degrees.of(pov).in(Units.Radians);
       return VecBuilder.fill(cos(angle), sin(-angle));
     }
@@ -160,8 +177,8 @@ public class DriverControls {
       return -1;
     }
 
-    RJLog.log("Driver/RightY", driver.getRightY());
-    RJLog.log("Driver/RightX", driver.getRightX());
+    // RJLog.log("Driver/RightY", driver.getRightY());
+    // RJLog.log("Driver/RightX", driver.getRightX());
 
     var angle =
         new Rotation2d(rightStick.get(0), rightStick.get(1))

@@ -576,17 +576,24 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
 
     if (headingTarget != NONE) {
       targetHeading = getStateCopy().Pose.getRotation();
+      RJLog.log("DriveMode", "HeadingSnap");
       return headingSnap(driver, controlMode, headingTarget);
     }
 
     if (driver.config.PathToAnyFace()) {
       if (driver.shouldManuallyRotate()) {
         targetHeading = getStateCopy().Pose.getRotation();
+        RJLog.log("DriveMode", "Manual");
+
         return manualRotation(driver, controlMode);
       }
 
+      RJLog.log("DriveMode", "PathToFace");
+
       return faceHeading(driver, controlMode, targetHeading);
     }
+
+    RJLog.log("DriveMode", "Manual2");
 
     return manualRotation(driver, controlMode);
   }
@@ -597,6 +604,8 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
     if (driver.shouldUseRobotCentric()) {
       var input = driver.robotCentric(controlMode);
 
+      RJLog.log("Driver/RobotCentricInput", input);
+
       return robotCentric
           .withVelocityX(input.vx)
           .withVelocityY(input.vy)
@@ -604,6 +613,8 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
     }
 
     var input = driver.fieldCentric(controlMode);
+
+    RJLog.log("Driver/FieldCentricInput", input);
 
     return fieldCentric
         .withVelocityX(input.vx)

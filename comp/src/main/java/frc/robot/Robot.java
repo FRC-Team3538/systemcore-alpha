@@ -68,6 +68,11 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     // Tracer.traceFunc("LoggedCommandScheduler::periodic", LoggedCommandScheduler::periodic);
 
+    // RJLog.log(
+    //     "DriverInput", m_robotContainer.driverControls.fieldCentric(ControlMode.CYCLING_MODE));
+
+    RJLog.log("Driver/POV", m_robotContainer.driver.getHID().getPOV());
+
     RJLog.log("ControlMode", m_robotContainer.controlModeManager.getCurrentMode());
     RJLog.log(
         "SuperStructure/TargetState",
@@ -84,7 +89,25 @@ public class Robot extends TimedRobot {
         "SuperStructure/CurrentState",
         m_robotContainer.superstructure.getCurrentConfiguration().toString());
 
-    Threads.setCurrentThreadPriority(false, 10);
+    var controller = m_robotContainer.driver.getHID();
+
+    // RJLog.log("Driver/leftx", controller.getLeftX());
+    // RJLog.log("Driver/lefty", controller.getLeftY());
+    // RJLog.log("Driver/rightx", controller.getRightX());
+    // RJLog.log("Driver/righty", controller.getRightY());
+    // RJLog.log("Driver/lefttrigger", controller.getLeftTriggerAxis());
+    // RJLog.log("Driver/righttrigger", controller.getRightTriggerAxis());
+
+    // RJLog.log("Driver/a", controller.getAButton());
+    // RJLog.log("Driver/b", controller.getBButton());
+    // RJLog.log("Driver/x", controller.getXButton());
+    // RJLog.log("Driver/y", controller.getYButton());
+    // RJLog.log("Driver/leftbumper", controller.getLeftBumperButton());
+    // RJLog.log("Driver/rightbumper", controller.getRightBumperButton());
+    // RJLog.log("Driver/start", controller.getStartButton());
+    // RJLog.log("Driver/back", controller.getBackButton());
+    // RJLog.log("Driver/leftstick", controller.getLeftStickButton());
+    // RJLog.log("Driver/rightstick", controller.getRightStickButton());
   }
 
   @Override
