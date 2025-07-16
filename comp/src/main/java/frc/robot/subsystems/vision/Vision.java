@@ -191,8 +191,7 @@ public class Vision extends SubsystemBase {
 
       // Loop over pose observations
       // Tracer.startTrace("ApplyObservations");
-      // Only apply latest 2 observations
-      for (int index = max(0, inputs[cameraIndex].poseObservations.length - 2);
+      for (int index = 0;
           index < inputs[cameraIndex].poseObservations.length;
           index++) {
         // Tracer.startTrace(Integer.toString(index));

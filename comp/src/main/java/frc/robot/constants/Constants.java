@@ -245,7 +245,7 @@ public class Constants {
 
     public static final AlgaeArmConfig DEFAULT =
         new AlgaeArmConfig(
-            new TalonFXID(15, "rio"),
+            new TalonFXID(15, "can_s0"),
             new TalonFXConfiguration()
                 .withSlot0(
                     new Slot0Configs()
@@ -573,7 +573,7 @@ public class Constants {
 
     public static AlgaeMechConfig DEFAULT =
         new AlgaeMechConfig(
-            new TalonFXID(16, "rio"),
+            new TalonFXID(16, "can_s0"),
             new TalonFXConfiguration()
                 .withCurrentLimits(
                     new CurrentLimitsConfigs()
@@ -663,9 +663,9 @@ public class Constants {
 
     public static CoralMechConfig DEFAULT =
         new CoralMechConfig(
-            new TalonFXID(14, "rio"),
+            new TalonFXID(14, "can_s0"),
             new TalonFXConfiguration(),
-            new CANdiID(20, "rio"),
+            new CANdiID(20, "can_s0"),
             new CANdiConfiguration());
   }
 

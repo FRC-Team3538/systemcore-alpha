@@ -236,10 +236,12 @@ public class Drive extends TunerSwerveDrivetrain implements Subsystem {
       };
 
   public Drive(
-      SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
+      SwerveDrivetrainConstants drivetrainConstants,
+      double odometryUpdateFrequency,
+      SwerveModuleConstants<?, ?, ?>... modules) {
     super(
         drivetrainConstants,
-        250,
+        odometryUpdateFrequency,
         VecBuilder.fill(0.1, 0.1, 0.1),
         VecBuilder.fill(0.1, 0.1, 0.1),
         modules);
