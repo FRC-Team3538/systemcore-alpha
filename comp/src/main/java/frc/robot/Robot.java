@@ -44,7 +44,9 @@ public class Robot extends TimedRobot {
         pose -> RJLog.log("PathPlanner/CurrentPose", pose));
     PathPlannerLogging.setLogTargetPoseCallback(pose -> RJLog.log("PathPlanner/TargetPose", pose));
 
-    FollowPathCommand.warmupCommand().withName("PathPlanner::FollowPathCommand[Warmup]").schedule();
+    CommandScheduler.getInstance()
+        .schedule(
+            FollowPathCommand.warmupCommand().withName("PathPlanner::FollowPathCommand[Warmup]"));
 
     RepulsorFieldPlanner planner = new RepulsorFieldPlanner();
     planner.sampleField(
