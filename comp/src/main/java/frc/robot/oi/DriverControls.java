@@ -1,6 +1,8 @@
 package frc.robot.oi;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -10,9 +12,9 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation.POVDirection;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.constants.Constants.ControlsConfig;
 import frc.robot.lib.RJLog;
@@ -49,7 +51,7 @@ public class DriverControls {
   }
 
   public boolean shouldUseRobotCentric() {
-    return driver.getPOV() != 0;
+    return driver.getPOV() != POVDirection.Center;
   }
 
   public boolean shouldManuallyRotate() {
@@ -78,31 +80,37 @@ public class DriverControls {
   }
 
   private Vector<N2> robotCentricInternal() {
-    var pov = driver.getPOV();
-
-    if (pov == 0) {
-      return VecBuilder.fill(0, 0);
-    } else {
-
-      // i hate this
-      var angles =
-          new int[] {
-            0, 0, // up
-            90, // right
-            45, // up right
-            180, // down
-            0, 135, // down right
-            0, 270, // left
-            315, // up left
-            0, 0, 225, // down left
-            0, 0, 0
-          };
-
-      pov = angles[pov];
-
-      var angle = Units.Degrees.of(pov).in(Units.Radians);
-      return VecBuilder.fill(cos(angle), sin(-angle));
+    var angle = Degrees.zero();
+    switch (driver.getPOV()) {
+      case Center:
+        return VecBuilder.fill(0, 0);
+      case Up:
+        angle = Degrees.zero();
+        break;
+      case UpRight:
+        angle = Degrees.of(45);
+        break;
+      case Right:
+        angle = Degrees.of(90);
+        break;
+      case DownRight:
+        angle = Degrees.of(135);
+        break;
+      case Down:
+        angle = Degrees.of(180);
+        break;
+      case DownLeft:
+        angle = Degrees.of(225);
+        break;
+      case Left:
+        angle = Degrees.of(270);
+        break;
+      case UpLeft:
+        angle = Degrees.of(315);
+        break;
     }
+
+    return VecBuilder.fill(cos(angle.in(Radians)), sin(-angle.in(Radians)));
   }
 
   private Vector<N2> fieldCentricInternal() {
