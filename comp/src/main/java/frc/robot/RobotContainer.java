@@ -361,13 +361,13 @@ public class RobotContainer {
 
     // Intake with coral mech
     cyclingMode
-        .and(driver.rightLowerPaddle().or(driver.leftLowerPaddle()).or(operator.pov(270)))
+        .and(driver.rightLowerPaddle().or(driver.leftLowerPaddle()).or(operator.povLeft()))
         .and(() -> superstructure.WithinTolerance(HOME))
         .whileTrue(LoadCoral().alongWith(leds.CoralIntaking()));
 
     // Configure Superstructure to Intake from Floor
     cyclingMode
-        .and(driver.rightBumper().or(operator.pov(90)))
+        .and(driver.rightBumper().or(operator.povRight()))
         .and(this::isNotScoring)
         .whileTrue(LoadAlgae().alongWith(leds.AlgaeIntaking()))
         .onFalse(
