@@ -81,7 +81,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    implementation 'com.github.jlmcmchl:DogLog:7a923d3'
 }
 
 test {
